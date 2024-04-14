@@ -71,7 +71,11 @@ if args.log:
     api = wandb.Api()
     runs = api.runs(os.path.join("jioh0826", "cs-spec"))
     table_run_ids = {run.name: run.id for run in runs}
-    wandb.init(project="cs-spec", id=table_run_ids[args.run_name])
+
+    if args.run_name in table_run_ids:
+        wandb.init(project="cs-spec", id=table_run_ids[args.run_name])
+    else:
+        wandb.init(project="cs-spec", name=args.run_name)
 
 rank = os.environ.get("LOCAL_RANK", 0)
 device = torch.device("cuda", rank)
@@ -127,6 +131,7 @@ def test():
     At_out_list = torch.cat(At_out_list).cpu().numpy()
     error_list = torch.cat(error_list).cpu().numpy()
     error_reduced_list = torch.cat(error_reduced_list).cpu().numpy()
+    psnr_list = [10 * np.log10(np.power(np.max(x) - np.min(x), 2) / mse) for x, mse in zip(x_list, error_reduced_list)]
 
     np.savetxt(os.path.join(args.save_path, "y.csv"), y_list, delimiter=",")
     np.savetxt(os.path.join(args.save_path, "x.csv"), x_list, delimiter=",")
@@ -134,14 +139,16 @@ def test():
     np.savetxt(os.path.join(args.save_path, "At_out.csv"), At_out_list, delimiter=",")
     np.savetxt(os.path.join(args.save_path, "error.csv"), error_list, delimiter=",")
     np.savetxt(os.path.join(args.save_path, "error_reduced.csv"), error_reduced_list, delimiter=",")
+    np.savetxt(os.path.join(args.save_path, "psnr.csv"), psnr_list, delimiter=",")
     np.savetxt(os.path.join(args.save_path, "At.csv"), model.At.weight.data.cpu().numpy(), delimiter=",")
 
     avg_mse = sum(error_reduced_list) / len(error_reduced_list)
-    print(f"total {len(error_reduced_list)} samples, avg MSE: {avg_mse}")
+    avg_psnr = sum(psnr_list) / len(psnr_list)
+    print(f"total {len(error_reduced_list)} samples, avg MSE: {avg_mse}, avg PSNR: {avg_psnr}")
 
     if args.log:
-        tb = wandb.Table(columns=["model_name", "dataset_name", "avg_mse"])
-        tb.add_data(args.model_name, args.dataset_name, avg_mse)
+        tb = wandb.Table(columns=["model_name", "dataset_name", "avg_mse", "avg_psnr"])
+        tb.add_data(args.model_name, args.dataset_name, avg_mse, avg_psnr)
         wandb.log({"table/test_summary": tb})
         wandb.save(os.path.join(args.save_path, "*.csv"))
 

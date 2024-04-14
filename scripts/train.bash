@@ -7,18 +7,13 @@ table_dataset=(
     # "synthetic-n25db"
     # "synthetic-n15db"
     "measured"
-    # "drink-pink"
-    # "drink-gold"
-    # "drink-pyellow"
-    # "drink-blue"
-    # "drink-purple"
 )
 
 
 table_model=(
     "cnn-wa"
     "cnn-wagu"
-    # "cnn-woa"
+    "cnn-woa"
     # "rescnn-wa"
     # "rescnn-wagu"
     # "rescnn-woa"
@@ -38,8 +33,7 @@ for dataset_name in ${table_dataset[@]}; do
     for model_name in ${table_model[@]}; do
         export model_name=${model_name}
         export run_name="${model_name}-${dataset_name}-${num_exp}"
-        bash ~/spec/scripts/template.bash
+        bash ~/spec/scripts/train_template.bash
     done
 done
 
-# python plot_results.py

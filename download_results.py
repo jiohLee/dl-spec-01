@@ -44,6 +44,7 @@ for dataset_name, model_name in product(table_dataset, table_model):
     run.file(f"results/{run.name}/xr.csv").download(exist_ok=True)
     run.file(f"results/{run.name}/error.csv").download(exist_ok=True)
     run.file(f"results/{run.name}/error_reduced.csv").download(exist_ok=True)
+    run.file(f"results/{run.name}/psnr.csv").download(exist_ok=True)
     run.file(f"results/{run.name}/At_out.csv").download(exist_ok=True)
     run.file(f"results/{run.name}/At.csv").download(exist_ok=True)
     print(f"download from {run.name}, duration: {datetime.timedelta(seconds=time.time() - start)}")
