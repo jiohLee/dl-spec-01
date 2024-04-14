@@ -21,8 +21,6 @@ table_model=(
 
 export num_exp=01
 
-export epoch=10
-export lr=0.0001
 export batch_size=1024
 
 for dataset_name in ${table_dataset[@]}; do
@@ -30,7 +28,7 @@ for dataset_name in ${table_dataset[@]}; do
     for model_name in ${table_model[@]}; do
         export model_name=${model_name}
         export run_name="${model_name}-${dataset_name}-${num_exp}"
-        bash ~/spec/scripts/template_evel.bash
+        bash ~/spec/scripts/template_eval.bash
     done
 done
 

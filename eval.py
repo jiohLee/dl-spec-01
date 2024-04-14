@@ -70,12 +70,12 @@ dataset_table = {
 if args.log:
     api = wandb.Api()
     runs = api.runs(os.path.join("jioh0826", "cs-spec"))
-    table_run_ids = {run.name: run.id for run in runs}
+    table_run = {run.name: run for run in runs}
 
-    if args.run_name in table_run_ids:
-        wandb.init(project="cs-spec", id=table_run_ids[args.run_name])
+    if args.run_name in table_run:
+        wandb.init(project="cs-spec", id=table_run[args.run_name].id, resume="must")
     else:
-        wandb.init(project="cs-spec", name=args.run_name)
+        wandb.init(project="cs-spec", name=args.run_name, config=dict(args._get_kwargs()))
 
 rank = os.environ.get("LOCAL_RANK", 0)
 device = torch.device("cuda", rank)
