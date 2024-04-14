@@ -87,7 +87,8 @@ class Model(nn.Module):
         sc = SkipConnection(64, 128, 256, mid_module=sc)
         sc = SkipConnection(1, 64, 128, mid_module=sc, mid_padding=1)
 
-        self.At = nn.Linear(36, 350)
+        self.At = nn.Linear(in_features=36, out_features=350, bias=False)
+        # self.At = nn.Linear(in_features=36, out_features=350)
 
         self.layers = nn.Sequential(
             sc,
@@ -115,9 +116,9 @@ def build_model(sensing_matrix_path=None) -> nn.Module:
     model = Model()
 
     if sensing_matrix_path:
-        A = loadmat(sensing_matrix_path)["sensing_matrix"]
-        T = torch.tensor(np.matmul(A.T, np.linalg.inv(np.matmul(A, A.T))), dtype=torch.float32)
-        model.At.weight = nn.Parameter(T)
+        T = loadmat(sensing_matrix_path)["sensing_matrix"]
+        A = torch.tensor(np.matmul(T.T, np.linalg.inv(np.matmul(T, T.T))), dtype=torch.float32)
+        model.At.weight = nn.Parameter(A)
 
     return model
 

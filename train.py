@@ -7,28 +7,19 @@ from tqdm import tqdm
 from scipy.io import loadmat
 import numpy as np
 
-from utils import show_dict, set_seed
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
 
+from utils import show_dict, set_seed
 from models import (
+    dataset,
     cnn,
     rescnn,
-    deepcubenet1d,
     resunet,
-    transformer01,
-    transformer02,
-    transformer03,
-    transformer04,
-    transformer05,
-    dataset,
 )
-
-set_seed(0)
 
 parser = ArgumentParser()
 parser.add_argument("--model_name", type=str, default="cnn")
@@ -44,6 +35,43 @@ parser.add_argument("--log", action="store_true", default=False)
 args, _ = parser.parse_known_args()
 args.save_path = os.path.join("./results", args.run_name)
 os.makedirs(args.save_path, exist_ok=True)
+show_dict(dict(args._get_kwargs()))
+
+
+def build_model(model_cls, requires_grad=False, smp=None) -> nn.Module:
+
+    model = model_cls()
+
+    if smp:
+        T = loadmat(smp)["sensing_matrix"]
+        A = torch.tensor(np.matmul(T.T, np.linalg.inv(np.matmul(T, T.T))), dtype=torch.float32)
+        model.At.weight = nn.Parameter(A)
+        model.At.weight.requires_grad = requires_grad
+
+    return model
+
+
+model_table = {
+    "cnn-wa": partial(build_model, cnn.Model, smp="/root/spec/models/sensing_matrix.mat"),
+    "cnn-wagu": partial(build_model, cnn.Model, smp="/root/spec/models/sensing_matrix.mat", requires_grad=True),
+    "cnn-woa": partial(build_model, cnn.Model),
+    "rescnn-wa": partial(build_model, rescnn.Model, smp="/root/spec/models/sensing_matrix.mat"),
+    "rescnn-wagu": partial(build_model, rescnn.Model, smp="/root/spec/models/sensing_matrix.mat", requires_grad=True),
+    "rescnn-woa": partial(build_model, rescnn.Model),
+    "resunet-wa": partial(build_model, resunet.Model, smp="/root/spec/models/sensing_matrix.mat"),
+    "resunet-wagu": partial(build_model, resunet.Model, smp="/root/spec/models/sensing_matrix.mat", requires_grad=True),
+    "resunet-woa": partial(build_model, resunet.Model),
+}
+
+dataset_table = {
+    "synthetic": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic.mat"),
+    "synthetic-n40db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n40db.mat"),
+    "synthetic-n30db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n30db.mat"),
+    "synthetic-n20db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n20db.mat"),
+    "measured": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-measured.mat"),
+}
+
+set_seed(0)
 
 if args.log:
     wandb.init(
@@ -52,69 +80,6 @@ if args.log:
         config=dict(args._get_kwargs()),
         save_code=True,
     )
-
-show_dict(dict(args._get_kwargs()))
-
-
-def build_model(model_cls, sensing_matrix_path=None) -> nn.Module:
-
-    model = model_cls()
-
-    if sensing_matrix_path:
-        A = loadmat(sensing_matrix_path)["sensing_matrix"]
-        T = torch.tensor(np.matmul(A.T, np.linalg.inv(np.matmul(A, A.T))), dtype=torch.float32)
-        model.At.weight = nn.Parameter(T)
-
-    return model
-
-
-model_table = {
-    "cnn-wa": partial(build_model, cnn.Model, "/root/spec/models/sensing_matrix.mat"),
-    "cnn-woa": partial(build_model, cnn.Model),
-    "rescnn-wa": partial(build_model, rescnn.Model, "/root/spec/models/sensing_matrix.mat"),
-    "rescnn-woa": partial(build_model, rescnn.Model),
-    "deepcubenet1d-wa": partial(build_model, deepcubenet1d.Model, "/root/spec/models/sensing_matrix.mat"),
-    "deepcubenet1d-woa": partial(build_model, deepcubenet1d.Model),
-    "resunet-wa": partial(build_model, resunet.Model, "/root/spec/models/sensing_matrix.mat"),
-    "resunet-woa": partial(build_model, resunet.Model),
-    "transformer01-wa": partial(transformer01.build_model, sensing_matrix_path="/root/spec/models/sensing_matrix.mat"),
-    "transformer01-wa-nh1": partial(
-        transformer01.build_model, n_heads=1, sensing_matrix_path="/root/spec/models/sensing_matrix.mat"
-    ),
-    "transformer01-woa": partial(transformer01.build_model),
-    "transformer01-woa-nh1": partial(transformer01.build_model, n_heads=1),
-    "transformer02-wa": partial(transformer02.build_model, sensing_matrix_path="/root/spec/models/sensing_matrix.mat"),
-    "transformer02-wa-nh1": partial(
-        transformer02.build_model, n_heads=1, sensing_matrix_path="/root/spec/models/sensing_matrix.mat"
-    ),
-    "transformer02-woa": partial(transformer02.build_model),
-    "transformer02-woa-nh1": partial(transformer02.build_model, n_heads=1),
-    "transformer03-wa": partial(transformer03.build_model, sensing_matrix_path="/root/spec/models/sensing_matrix.mat"),
-    "transformer03-wa-nh1": partial(
-        transformer03.build_model, n_heads=1, sensing_matrix_path="/root/spec/models/sensing_matrix.mat"
-    ),
-    "transformer03-woa": partial(transformer03.build_model),
-    "transformer03-woa-nh1": partial(transformer03.build_model, n_heads=1),
-    "transformer04-wa": partial(transformer04.build_model, sensing_matrix_path="/root/spec/models/sensing_matrix.mat"),
-    "transformer04-wa-nh1": partial(
-        transformer04.build_model, n_heads=1, sensing_matrix_path="/root/spec/models/sensing_matrix.mat"
-    ),
-    "transformer04-woa": partial(transformer04.build_model),
-    "transformer04-woa-nh1": partial(transformer04.build_model, n_heads=1),
-    "transformer05": partial(transformer05.build_model),
-    "transformer05-nh1": partial(transformer05.build_model, n_heads=1),
-}
-
-dataset_table = {
-    "synthetic": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic.mat"),
-    "synthetic-n15db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n15db.mat"),
-    "synthetic-n20db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n20db.mat"),
-    "synthetic-n25db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n25db.mat"),
-    "synthetic-n30db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n30db.mat"),
-    "synthetic-n35db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n35db.mat"),
-    "synthetic-n40db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n40db.mat"),
-    "measured": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-measured.mat"),
-}
 
 rank = os.environ.get("LOCAL_RANK", 0)
 device = torch.device("cuda", rank)
@@ -130,8 +95,9 @@ loader_valid = DataLoader(dataset=dataset_valid, batch_size=args.batch_size)
 loader_test = DataLoader(dataset=dataset_test, batch_size=args.batch_size)
 
 model = model_cls().to(device)
-
 model_optim = optim.Adam(params=model.parameters(), lr=args.lr, weight_decay=1e-5)
+if args.log:
+    wandb.watch(model, criterion="all", log_freq=1)
 
 
 def train_epoch():
@@ -223,13 +189,8 @@ for epoch in range(args.epochs):
     if (epoch + 1) % args.ckpt_freq == 0 and args.ckpt_delay < (epoch + 1):
         if min(value, result["valid/loss"]) == result["valid/loss"]:
             value = result["valid/loss"]
-            ckpt_dict = {
-                "model": model.state_dict(),
-                "optim": model_optim.state_dict(),
-            }
-
-            print(f"save checkpoint to {args.save_path}")
-            torch.save(ckpt_dict, os.path.join(args.save_path, f"{args.run_name}.pt"))
+            print(f"save to {args.save_path}")
+            torch.save(model.state_dict(), os.path.join(args.save_path, f"{args.run_name}.pt"))
 
 torch.save(model.state_dict(), os.path.join(args.save_path, f"{args.run_name}_latest.pt"))
 

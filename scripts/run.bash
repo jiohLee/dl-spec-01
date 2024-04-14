@@ -1,11 +1,11 @@
 table_dataset=(
-    "synthetic"
-    "synthetic-n15db"
-    "synthetic-n20db"
-    "synthetic-n25db"
-    "synthetic-n30db"
-    "synthetic-n35db"
-    "synthetic-n40db"
+    # "synthetic"
+    # "synthetic-n40db"
+    # "synthetic-n30db"
+    # "synthetic-n20db"
+    # "synthetic-n35db"
+    # "synthetic-n25db"
+    # "synthetic-n15db"
     "measured"
     # "drink-pink"
     # "drink-gold"
@@ -17,22 +17,19 @@ table_dataset=(
 
 table_model=(
     "cnn-wa"
-    "cnn-woa"
-    "rescnn-wa"
-    "rescnn-woa"
-    "deepcubenet1d-wa"
-    "deepcubenet1d-woa"
-    "resunet-wa"
-    "resunet-woa"
-    "resunet_cskim-wa"
-    "resunet_cskim-woa"
-    # "transformer01-wa"
-    # "transformer01-woa"
+    "cnn-wagu"
+    # "cnn-woa"
+    # "rescnn-wa"
+    # "rescnn-wagu"
+    # "rescnn-woa"
+    # "resunet-wa"
+    # "resunet-wagu"
+    # "resunet-woa"
 )
 
 export num_exp=01
 
-export epoch=500
+export epoch=10
 export lr=0.0001
 export batch_size=1024
 
@@ -45,4 +42,4 @@ for dataset_name in ${table_dataset[@]}; do
     done
 done
 
-python plot_results.py
+# python plot_results.py

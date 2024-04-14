@@ -7,13 +7,14 @@ time python train.py \
 --batch_size ${batch_size} \
 --ckpt_freq 1 \
 --ckpt_delay 0 \
-# --log
+--log \
 
-# time python eval.py \
-# --model_name ${model_name} \
-# --dataset_name ${dataset_name} \
-# --run_name ${run_name} \
-# --weights /root/spec/results/${run_name}/${run_name}.pt \
+time python eval.py \
+--model_name ${model_name} \
+--dataset_name ${dataset_name} \
+--run_name ${run_name} \
+--weights /root/spec/results/${run_name}/${run_name}.pt \
+--log \
 
 # time python eval.py \
 # --model_name ${model_name} \
