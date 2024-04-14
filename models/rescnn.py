@@ -3,7 +3,6 @@ from scipy.io import loadmat
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 from torchinfo import summary
 
@@ -53,7 +52,6 @@ class Model(nn.Module):
         x = self.fc_layers(x)
 
         return self.out(x).unsqueeze(1) + ext
-        return F.relu(self.out(x).unsqueeze(1) + ext)
 
 
 def build_model(sensing_matrix_path=None) -> nn.Module:

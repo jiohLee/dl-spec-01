@@ -3,7 +3,6 @@ from argparse import ArgumentParser
 from functools import partial
 from tqdm import tqdm
 import numpy as np
-import pandas as pd
 import wandb
 
 import torch
