@@ -11,12 +11,12 @@ table_model=(
     "cnn-wa"
     "cnn-wagu"
     "cnn-woa"
-    # "rescnn-wa"
-    # "rescnn-wagu"
-    # "rescnn-woa"
-    # "resunet-wa"
-    # "resunet-wagu"
-    # "resunet-woa"
+    "rescnn-wa"
+    "rescnn-wagu"
+    "rescnn-woa"
+    "resunet-wa"
+    "resunet-wagu"
+    "resunet-woa"
 )
 
 export num_exp=01
