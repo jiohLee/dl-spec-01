@@ -1,11 +1,11 @@
 table_dataset=(
     "synthetic"
     "synthetic-n40db"
-    # "synthetic-n35db"
+    "synthetic-n35db"
     "synthetic-n30db"
-    # "synthetic-n25db"
-    "synthetic-n20db"
-    # "synthetic-n15db"
+    "synthetic-n25db"
+    "synthetic-n20db" 
+    "synthetic-n15db"
     "measured"
 )
 

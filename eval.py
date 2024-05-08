@@ -58,6 +58,15 @@ dataset_table = {
     "synthetic-n20db": partial(
         dataset.Spectrum, split="test", root="/root/spec/datasets/spec-data-synthetic-n20db.mat"
     ),
+    "synthetic-n35db": partial(
+        dataset.Spectrum, split="test", root="/root/spec/datasets/spec-data-synthetic-n35db.mat"
+    ),
+    "synthetic-n25db": partial(
+        dataset.Spectrum, split="test", root="/root/spec/datasets/spec-data-synthetic-n25db.mat"
+    ),
+    "synthetic-n15db": partial(
+        dataset.Spectrum, split="test", root="/root/spec/datasets/spec-data-synthetic-n15db.mat"
+    ),
     "measured": partial(dataset.Spectrum, split="test", root="/root/spec/datasets/spec-data-measured.mat"),
     "drink-pink": partial(dataset.Spectrum, split="pink", root="/root/spec/datasets/spec-data-drink.mat"),
     "drink-gold": partial(dataset.Spectrum, split="gold", root="/root/spec/datasets/spec-data-drink.mat"),
@@ -72,9 +81,11 @@ if args.log:
     table_run = {run.name: run for run in runs}
 
     if args.run_name in table_run:
-        wandb.init(project="cs-spec", id=table_run[args.run_name].id, resume="must")
+        run = wandb.init(project="cs-spec", id=table_run[args.run_name].id, resume="must")
+        print(f"resume run {run.name}, {run.id}")
     else:
-        wandb.init(project="cs-spec", name=args.run_name, config=dict(args._get_kwargs()))
+        run = wandb.init(project="cs-spec", name=args.run_name, config=dict(args._get_kwargs()))
+        print(f"start run {run.name}, {run.id}")
 
 rank = os.environ.get("LOCAL_RANK", 0)
 device = torch.device("cuda", rank)
@@ -146,9 +157,9 @@ def test():
     print(f"total {len(error_reduced_list)} samples, avg MSE: {avg_mse}, avg PSNR: {avg_psnr}")
 
     if args.log:
-        tb = wandb.Table(columns=["model_name", "dataset_name", "avg_mse", "avg_psnr"])
-        tb.add_data(args.model_name, args.dataset_name, avg_mse, avg_psnr)
-        wandb.log({"table/test_summary": tb})
+        # tb = wandb.Table(columns=["model_name", "dataset_name", "avg_mse", "avg_psnr"])
+        # tb.add_data(args.model_name, args.dataset_name, avg_mse, avg_psnr)
+        # wandb.log({"table/test_summary": tb})
         wandb.save(os.path.join(args.save_path, "*.csv"))
 
 

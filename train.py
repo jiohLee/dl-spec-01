@@ -68,18 +68,22 @@ dataset_table = {
     "synthetic-n40db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n40db.mat"),
     "synthetic-n30db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n30db.mat"),
     "synthetic-n20db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n20db.mat"),
+    "synthetic-n35db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n35db.mat"),
+    "synthetic-n25db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n25db.mat"),
+    "synthetic-n15db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n15db.mat"),
     "measured": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-measured.mat"),
 }
 
 set_seed(0)
 
 if args.log:
-    wandb.init(
+    run = wandb.init(
         project="cs-spec",
         name=args.run_name,
         config=dict(args._get_kwargs()),
         save_code=True,
     )
+    print(f"start run {run.name}, {run.id}")
 
 rank = os.environ.get("LOCAL_RANK", 0)
 device = torch.device("cuda", rank)

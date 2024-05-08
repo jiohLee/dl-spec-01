@@ -21,7 +21,7 @@ def main():
     ds = Spectrum("../datasets/spec-data-measured.mat", "test")
 
     x, y = next(iter(ds))
-    print(x.shape, y.shape)
+    print(x.shape, y.shape, len(ds))
 
     fig, axes = plt.subplots(2, 1, height_ratios=[1, 1])
 
