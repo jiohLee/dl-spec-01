@@ -64,14 +64,14 @@ model_table = {
 }
 
 dataset_table = {
-    "synthetic": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic.mat"),
-    "synthetic-n40db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n40db.mat"),
-    "synthetic-n30db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n30db.mat"),
-    "synthetic-n20db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n20db.mat"),
-    "synthetic-n35db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n35db.mat"),
-    "synthetic-n25db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n25db.mat"),
-    "synthetic-n15db": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-synthetic-n15db.mat"),
-    "measured": partial(dataset.Spectrum, root="/root/spec/datasets/spec-data-measured.mat"),
+    "synthetic": partial(dataset.Spectrum, root="/root/spec/datasets/synthetic.mat"),
+    "synthetic-n40db": partial(dataset.Spectrum, root="/root/spec/datasets/synthetic-n40db.mat"),
+    "synthetic-n30db": partial(dataset.Spectrum, root="/root/spec/datasets/synthetic-n30db.mat"),
+    "synthetic-n20db": partial(dataset.Spectrum, root="/root/spec/datasets/synthetic-n20db.mat"),
+    "synthetic-n35db": partial(dataset.Spectrum, root="/root/spec/datasets/synthetic-n35db.mat"),
+    "synthetic-n25db": partial(dataset.Spectrum, root="/root/spec/datasets/synthetic-n25db.mat"),
+    "synthetic-n15db": partial(dataset.Spectrum, root="/root/spec/datasets/synthetic-n15db.mat"),
+    "measured": partial(dataset.Spectrum, root="/root/spec/datasets/measured.mat"),
 }
 
 set_seed(0)

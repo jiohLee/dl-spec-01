@@ -18,7 +18,7 @@ class Spectrum:
 
 
 def main():
-    ds = Spectrum("../datasets/spec-data-measured.mat", "test")
+    ds = Spectrum("../datasets/measured.mat", "test")
 
     x, y = next(iter(ds))
     print(x.shape, y.shape, len(ds))
