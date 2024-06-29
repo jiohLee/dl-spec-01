@@ -52,26 +52,30 @@ def build_model(model_cls, requires_grad=False, smp=None) -> nn.Module:
 
 
 model_table = {
-    "cnn-wa": partial(build_model, cnn.Model, smp="/root/spec/models/sensing_matrix.mat"),
-    "cnn-wagu": partial(build_model, cnn.Model, smp="/root/spec/models/sensing_matrix.mat", requires_grad=True),
+    "cnn-wa": partial(build_model, cnn.Model, smp="/root/dl-spec-01/models/sensing_matrix.mat"),
+    "cnn-wagu": partial(build_model, cnn.Model, smp="/root/dl-spec-01/models/sensing_matrix.mat", requires_grad=True),
     "cnn-woa": partial(build_model, cnn.Model),
-    "rescnn-wa": partial(build_model, rescnn.Model, smp="/root/spec/models/sensing_matrix.mat"),
-    "rescnn-wagu": partial(build_model, rescnn.Model, smp="/root/spec/models/sensing_matrix.mat", requires_grad=True),
+    "rescnn-wa": partial(build_model, rescnn.Model, smp="/root/dl-spec-01/models/sensing_matrix.mat"),
+    "rescnn-wagu": partial(
+        build_model, rescnn.Model, smp="/root/dl-spec-01/models/sensing_matrix.mat", requires_grad=True
+    ),
     "rescnn-woa": partial(build_model, rescnn.Model),
-    "resunet-wa": partial(build_model, resunet.Model, smp="/root/spec/models/sensing_matrix.mat"),
-    "resunet-wagu": partial(build_model, resunet.Model, smp="/root/spec/models/sensing_matrix.mat", requires_grad=True),
+    "resunet-wa": partial(build_model, resunet.Model, smp="/root/dl-spec-01/models/sensing_matrix.mat"),
+    "resunet-wagu": partial(
+        build_model, resunet.Model, smp="/root/dl-spec-01/models/sensing_matrix.mat", requires_grad=True
+    ),
     "resunet-woa": partial(build_model, resunet.Model),
 }
 
 dataset_table = {
-    "synthetic": partial(dataset.Spectrum, root="/root/spec/datasets/synthetic.mat"),
-    "synthetic-n40db": partial(dataset.Spectrum, root="/root/spec/datasets/synthetic-n40db.mat"),
-    "synthetic-n30db": partial(dataset.Spectrum, root="/root/spec/datasets/synthetic-n30db.mat"),
-    "synthetic-n20db": partial(dataset.Spectrum, root="/root/spec/datasets/synthetic-n20db.mat"),
-    "synthetic-n35db": partial(dataset.Spectrum, root="/root/spec/datasets/synthetic-n35db.mat"),
-    "synthetic-n25db": partial(dataset.Spectrum, root="/root/spec/datasets/synthetic-n25db.mat"),
-    "synthetic-n15db": partial(dataset.Spectrum, root="/root/spec/datasets/synthetic-n15db.mat"),
-    "measured": partial(dataset.Spectrum, root="/root/spec/datasets/measured.mat"),
+    "synthetic": partial(dataset.Spectrum, root="/root/dl-spec-01/datasets/synthetic.mat"),
+    "synthetic-n40db": partial(dataset.Spectrum, root="/root/dl-spec-01/datasets/synthetic-n40db.mat"),
+    "synthetic-n30db": partial(dataset.Spectrum, root="/root/dl-spec-01/datasets/synthetic-n30db.mat"),
+    "synthetic-n20db": partial(dataset.Spectrum, root="/root/dl-spec-01/datasets/synthetic-n20db.mat"),
+    "synthetic-n35db": partial(dataset.Spectrum, root="/root/dl-spec-01/datasets/synthetic-n35db.mat"),
+    "synthetic-n25db": partial(dataset.Spectrum, root="/root/dl-spec-01/datasets/synthetic-n25db.mat"),
+    "synthetic-n15db": partial(dataset.Spectrum, root="/root/dl-spec-01/datasets/synthetic-n15db.mat"),
+    "measured": partial(dataset.Spectrum, root="/root/dl-spec-01/datasets/measured.mat"),
 }
 
 set_seed(0)
