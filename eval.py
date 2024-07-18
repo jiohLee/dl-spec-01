@@ -3,7 +3,6 @@ from argparse import ArgumentParser
 from functools import partial
 from tqdm import tqdm
 import numpy as np
-import wandb
 
 import torch
 import torch.nn as nn
@@ -62,18 +61,6 @@ dataset_table = {
     "drink-blue": partial(dataset.Spectrum, split="blue", root="/root/dl-spec-01/datasets/drink.mat"),
     "drink-purple": partial(dataset.Spectrum, split="purple", root="/root/dl-spec-01/datasets/drink.mat"),
 }
-
-if args.log:
-    api = wandb.Api()
-    runs = api.runs(os.path.join("jioh0826", "cs-spec"))
-    table_run = {run.name: run for run in runs}
-
-    if args.run_name in table_run:
-        run = wandb.init(project="cs-spec", id=table_run[args.run_name].id, resume="must")
-        print(f"resume run {run.name}, {run.id}")
-    else:
-        run = wandb.init(project="cs-spec", name=args.run_name, config=dict(args._get_kwargs()))
-        print(f"start run {run.name}, {run.id}")
 
 rank = os.environ.get("LOCAL_RANK", 0)
 device = torch.device("cuda", rank)
@@ -144,15 +131,6 @@ def test():
     avg_psnr = sum(psnr_list) / len(psnr_list)
     print(f"total {len(error_reduced_list)} samples, avg MSE: {avg_mse}, avg PSNR: {avg_psnr}")
 
-    if args.log:
-        # tb = wandb.Table(columns=["model_name", "dataset_name", "avg_mse", "avg_psnr"])
-        # tb.add_data(args.model_name, args.dataset_name, avg_mse, avg_psnr)
-        # wandb.log({"table/test_summary": tb})
-        wandb.save(os.path.join(args.save_path, "*.csv"))
-
 
 with torch.no_grad():
     test()
-
-if args.log:
-    wandb.finish()

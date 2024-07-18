@@ -33,7 +33,9 @@ for dataset_name in ${table_dataset[@]}; do
     for model_name in ${table_model[@]}; do
         export model_name=${model_name}
         export run_name="${model_name}-${dataset_name}-${num_exp}"
+        
         bash ~/dl-spec-01/scripts/template_train.bash
+        bash ~/dl-spec-01/scripts/template_eval.bash
     done
 done
 

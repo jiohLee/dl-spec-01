@@ -80,14 +80,6 @@ dataset_table = {
 
 set_seed(0)
 
-if args.log:
-    run = wandb.init(
-        project="cs-spec",
-        name=args.run_name,
-        config=dict(args._get_kwargs()),
-        save_code=True,
-    )
-    print(f"start run {run.name}, {run.id}")
 
 rank = os.environ.get("LOCAL_RANK", 0)
 device = torch.device("cuda", rank)
@@ -104,7 +96,16 @@ loader_test = DataLoader(dataset=dataset_test, batch_size=args.batch_size)
 
 model = model_cls().to(device)
 model_optim = optim.Adam(params=model.parameters(), lr=args.lr, weight_decay=1e-5)
+
 if args.log:
+    run = wandb.init(
+        project="cs-spec",
+        name=args.run_name,
+        config=dict(args._get_kwargs()),
+        save_code=True,
+    )
+    print(f"start run {run.name}, {run.id}")
+
     wandb.watch(model, criterion="all", log_freq=1)
 
 
